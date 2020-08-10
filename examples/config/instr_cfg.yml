@@ -1,0 +1,19 @@
+#
+# this config file holds information on CARIBIC instruments.
+# it is required for communication in the container LAN.
+# each instrument is characterized by
+#
+# name
+#   IP Address (string)
+#   UDP receiving port (int)
+#   Warm-Up state allowed (boolean)
+#
+Test_Instr_at_64:
+    IP_Address: "192.168.1.64"
+    UDP_Port: 16164
+    WU_allowed: false
+
+Test_Instr_at_112:
+    IP_Address: "192.168.1.112"
+    UDP_Port: 16212
+    WU_allowed: true
