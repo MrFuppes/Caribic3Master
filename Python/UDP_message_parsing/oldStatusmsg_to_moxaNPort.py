@@ -18,38 +18,40 @@ import struct
 import time
 
 
-N, wait = 5, 1
+N, wait = 10, 2
+send_from = ('192.168.1.1', 4001)
+send_to = ('192.168.127.254', 4001) # moxa nport
+status_set = 'MS'
 
-send_from = ('192.168.1.1', 16101) # the socket from which to send
-send_to = ('192.168.1.64', 16164) # the target socket
-
-message = 'this is a test\n'.encode('utf-8')
-
+data_rec = b''
 
 with socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM) as UDPServerSocket:
     UDPServerSocket.bind(send_from)
     UDPServerSocket.settimeout(wait)
     for _ in range(N):
-        t = time.time()
-        message = struct.pack('!d', t) + message
+        # ------
+        message = ('\x02' + '216,' +
+                   datetime.now(tz=timezone.utc).strftime('%H:%M:%S.%f')[:-4] +
+                   ',' + status_set + '\x03')
+        checksum = 0
+        for el in message[1:]:
+            checksum ^= ord(el)
+        message = bytes(message, 'ASCII') + struct.pack("B", checksum)
+        # ------
         sent = UDPServerSocket.sendto(message, send_to)
-        print('sent {} bytes from {} to {}'.format(sent, send_from, send_to))
+
+        print(f'sent {sent} bytes from {send_from} to {send_to}')
+        print(f'message: {message}')
         print('awaiting reply...')
         try:
             data, addr = UDPServerSocket.recvfrom(1024)
         except socket.timeout:
             print('timed out.')
         else:
-            print(data[:8], data[8:16])
-            t_repl = datetime.fromtimestamp(
-                struct.unpack('!d', data[:8])[0],
-                tz=timezone.utc).isoformat()
-            t_sent = datetime.fromtimestamp(
-                struct.unpack('!d', data[8:16])[0],
-                tz=timezone.utc).isoformat()
-            print(data[16:], t_sent, t_repl)
-            print(struct.unpack('!d', data[:8])[0]-struct.unpack('!d', data[8:16])[0])
-            break
+            print(data)
+            data_rec += data
+            # break
+        time.sleep(wait)
 
 # s = []
 
@@ -62,4 +64,5 @@ with socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM) as UDPServerSo
 #     so.sendto('asdf'.encode('utf-8'), ('192.168.1.64', 16164))
 #     so.close()
 
-print("done.")
+print("done. received:")
+print(data_rec)

@@ -16,10 +16,9 @@ import socket
 import struct
 import time
 
-TIMEOUT = 10
+TIMEOUT = 5
 recv_on = ('192.168.1.64', 16164)
 repl_on = ('192.168.1.1', 16101)
-
 reply = "message received.".encode('utf-8')
 
 
