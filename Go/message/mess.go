@@ -1,4 +1,4 @@
-package msgutils
+package mess
 
 import (
 	"bytes"

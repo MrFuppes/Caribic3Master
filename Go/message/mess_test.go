@@ -1,7 +1,7 @@
-package msgutils_test
+package mess_test
 
 import (
-	. "car3-master/msg_parsing/msgutils"
+	. "car3-master/Go/message"
 	"fmt"
 	"net"
 	"testing"
