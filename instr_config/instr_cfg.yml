@@ -5,20 +5,19 @@
 #
 #   ID (int)
 #   Name (string)
-#   IP Address (string)
-#   UDP receiving port (int)
+#   Address (string)
 #   Warm-Up state allowed (boolean)
+#
+#   implicit: initial state is IN
 #
 Instruments:
 -
     ID: 64
     Name: "Test_Instr_at_64"
-    IP_Address: "192.168.1.64"
-    UDP_Port: 16164
+    Address: "192.168.1.64:16064"
     WU_allowed: false
 -
     ID: 112
     Name: "Test_Instr_at_112"
-    IP_Address: "192.168.1.112"
-    UDP_Port: 16212
+    IP_Address: "192.168.1.112:16112"
     WU_allowed: true
