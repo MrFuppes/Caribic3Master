@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestStateutils(t *testing.T) {
+func TestState(t *testing.T) {
 	s0 := Undefined
 	s1 := Idle
 	s2 := WarmUp
@@ -34,5 +34,30 @@ func TestStateutils(t *testing.T) {
 	fmt.Println(StateAbbr[s4>>3], assertTrue)
 	if !assertTrue {
 		t.Error("incorrect attribution of state name abbreviation")
+	}
+
+}
+
+func TestFromAbbr(t *testing.T) {
+	s, e := FromAbbr("SB")
+	if (s != 4) || (e != nil) {
+		t.Error("abbreviation to state nbr invalid")
+	}
+
+	s, e = FromAbbr("invalid")
+	if e == nil {
+		t.Error("abbreviation to state nbr invalid")
+	}
+}
+
+func TestFromName(t *testing.T) {
+	s, e := FromName("WarmUp")
+	if (s != 2) || (e != nil) {
+		t.Error("name to state nbr invalid")
+	}
+
+	s, e = FromName("invalid")
+	if e == nil {
+		t.Error("name to state nbr invalid")
 	}
 }

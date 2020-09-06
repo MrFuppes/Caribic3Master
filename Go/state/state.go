@@ -1,5 +1,10 @@
 package state
 
+import (
+	"errors"
+	"strings"
+)
+
 // State - instrument state enum
 type State uint
 
@@ -31,4 +36,28 @@ var StateAbbr = map[State]string{
 	2: "WU",
 	4: "SB",
 	8: "MS",
+}
+
+// FromAbbr - get state number from abbreviation
+func FromAbbr(expr string) (State, error) {
+	expr = strings.ToUpper(expr)
+	for k, v := range StateAbbr {
+		if v == expr {
+			return k, nil
+		}
+	}
+	errstr := "state: invalid abbreviation -> " + expr
+	return 999, errors.New(errstr)
+}
+
+// FromName - get state number from name
+func FromName(expr string) (State, error) {
+	expr = strings.ToLower(expr)
+	for k, v := range StateNames {
+		if strings.ToLower(v) == expr {
+			return k, nil
+		}
+	}
+	errstr := "state: invalid name -> " + expr
+	return 999, errors.New(errstr)
 }
