@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+
+	"car3-master/Go/instrument"
 )
 
 // Instruments - a struct to hold them all
 type Instruments struct {
-	Instruments []Instrument `json:"Instruments"`
+	Instruments []Instrument `json:"Payload"`
 }
 
 // Instrument - a struct to characterize one of them
@@ -22,7 +24,8 @@ type Instrument struct {
 }
 
 func main() {
-	file := "D:/KIT/A350_Changeover/MasterComputer/CARIBIC3_MasterComputer/examples/config/instr_cfg.json"
+	// file := "D:/KIT/A350_Changeover/MasterComputer/CARIBIC3_MasterComputer/examples/config/instr_cfg.json"
+	file := "C:/Users/flori/go/src/car3-master/instrConfig/instr_cfg.json"
 
 	var allInstruments Instruments
 
