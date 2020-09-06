@@ -1,0 +1,23 @@
+#
+# this config file holds information on CARIBIC instruments.
+# it is required for communication in the container LAN.
+# each instrument is characterized by
+#
+#   ID (int)
+#   Name (string)
+#   Address (string)
+#   Warm-Up state allowed (boolean)
+#
+#   implicit: initial state is IN
+#
+Payload:
+-
+    ID: 64
+    Name: "Test_Instr_at_64"
+    Address: "192.168.1.64:16064"
+    WU_allowed: false
+-
+    ID: 112
+    Name: "Test_Instr_at_112"
+    IP_Address: "192.168.1.112:16112"
+    WU_allowed: true
