@@ -20,7 +20,7 @@ func BenchmarkCheckForSig(b *testing.B) {
 	}
 }
 
-func TestMsgutils(t *testing.T) {
+func TestMess(t *testing.T) {
 	var ok bool
 	var msgStrct Message
 
