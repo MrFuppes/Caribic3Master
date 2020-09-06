@@ -10,7 +10,7 @@
 #
 #   implicit: initial state is IN
 #
-Instruments:
+Payload:
 -
     ID: 64
     Name: "Test_Instr_at_64"
