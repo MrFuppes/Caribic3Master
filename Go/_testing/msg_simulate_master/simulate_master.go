@@ -1,13 +1,24 @@
 package main
 
 import (
-	"car3-master/msg_parsing/msgutils"
+	inst "car3-master/Go/instrument"
+	mess "car3-master/Go/message"
 	"flag"
 	"fmt"
 	"log"
 	"net"
+	"os"
+	"path"
 	"time"
 )
+
+var payload inst.Payload
+
+func init() {
+	wd, _ := os.Getwd()
+	src := path.Join(wd, "instr_cfg_v20200907.yml")
+	payload, _ = inst.PayloadFromYAML(src)
+}
 
 func sendMsg(conn *net.UDPConn, addr *net.UDPAddr, msg []byte) {
 	_, err := conn.WriteToUDP(msg, addr)
@@ -47,8 +58,12 @@ func main() {
 	}
 	fmt.Println(masAddr, " ! ->", insAddr)
 
+	for k, v := range payload {
+		fmt.Println(k, v)
+	}
+
 	// construct the message to send
-	message := msgutils.Message{}
+	message := mess.Message{}
 	message.SendAddr = *masAddr
 	message.RecvAddr = *insAddr
 	message.MsgType = uint8(3)
@@ -72,7 +87,7 @@ func main() {
 		select {
 		case x := <-dataIn:
 			// data on the channel :)
-			parsed, _ := msgutils.MessageBytes(x).ToMessage()
+			parsed, _ := mess.MessageBytes(x).ToMessage()
 			fmt.Println("got data:", string(parsed.Data))
 		case <-time.After(5 * time.Second):
 			fmt.Println("sending message...")
