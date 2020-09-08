@@ -29,6 +29,7 @@ func TestMess(t *testing.T) {
 	// must be known: master and instrument address
 	masAddr, err := net.ResolveUDPAddr("udp", "192.168.1.1:16101") // {IPAddress: net.ParseIP("192.168.1.1"), UDPPort: 16101}
 	fmt.Printf("%v, %T (err: %v)\n", masAddr, masAddr, err)
+
 	insAddr, err := net.ResolveUDPAddr("udp", "192.168.1.64:16164") //Address{IPAddress: net.ParseIP("192.168.1.64"), UDPPort: 16164}
 	fmt.Printf("%v, %T (err: %v)\n\n", insAddr, insAddr, err)
 

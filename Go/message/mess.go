@@ -10,18 +10,19 @@ import (
 	"github.com/MrFuppes/Go_General_Use/typeconv"
 )
 
-// Message - a struct holding all the information of a UDP message.
+// Message - a struct to hold all the information of a UDP message.
 type Message struct {
-	SendAddr  net.UDPAddr
-	RecvAddr  net.UDPAddr
+	SendAddr  net.UDPAddr // who sent
+	RecvAddr  net.UDPAddr // who received
 	PackLen   uint16
-	Timestamp time.Time
-	MsgType   uint8
+	Timestamp time.Time // the moment the message was sent
+	MsgType   uint8     // 0 status set, 1 status is, 2 ambient params, 3 measured data
 	Data      []byte
-	Checksum  uint32
+	Checksum  uint32 // Adler32
 }
 
-// ToBytes - method of Message; cast it to a slice of bytes
+// ToBytes - method of Message; cast it to a slice of bytes.
+// Numbers in big endian byte order.
 func (msgStrct *Message) ToBytes() MessageBytes {
 	msg := make([]byte, len(msgStrct.Data)+27)
 	// sender and receiver addresses:
@@ -42,7 +43,8 @@ func (msgStrct *Message) ToBytes() MessageBytes {
 	return msg
 }
 
-// UDPAddrToBytes - method of Address struct; cast it to a slice of bytes
+// UDPAddrToBytes - method of Address struct; cast it to a slice of bytes.
+// Port is represented as UInt16, big endian.
 func UDPAddrToBytes(addrStrct net.UDPAddr) AddressBytes {
 	result := make([]byte, 6)
 	copy(result[0:4], net.IP.To4(addrStrct.IP))
@@ -50,10 +52,10 @@ func UDPAddrToBytes(addrStrct net.UDPAddr) AddressBytes {
 	return result
 }
 
-// AddressBytes - the source for Address struct
+// AddressBytes - the source for Address struct.
 type AddressBytes []byte
 
-// ToAddress - cast AddressBytes to Address struct
+// ToAddress - cast AddressBytes (4 bytes IP + 2 bytes port) to Address struct.
 func (b AddressBytes) ToAddress() net.UDPAddr {
 	var result net.UDPAddr
 	result.IP = net.IP(b[0:4])
@@ -61,7 +63,7 @@ func (b AddressBytes) ToAddress() net.UDPAddr {
 	return result
 }
 
-// MessageBytes - the source for Message struct
+// MessageBytes - the source for Message struct.
 type MessageBytes []byte
 
 // ToMessage - parse message bytes to a message struct.
@@ -94,7 +96,7 @@ func (msg MessageBytes) ToMessage() (Message, bool) {
 	return result, true
 }
 
-// CheckForSig check message bytes if they contain sender - receiver signature
+// CheckForSig check message bytes if they contain sender - receiver signature.
 func (msg MessageBytes) CheckForSig(sendAddr net.UDPAddr, recvAddr net.UDPAddr) (MessageBytes, bool) {
 	signature := append(UDPAddrToBytes(sendAddr), UDPAddrToBytes(recvAddr)...)
 	idx := bytes.Index(msg, signature)
