@@ -1,3 +1,4 @@
+// Package state implements state type for Container-Lab and instruments.
 package state
 
 import (

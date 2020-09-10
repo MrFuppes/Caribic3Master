@@ -1,3 +1,5 @@
+// Package mess implements basic types and functionality to handle messages
+// on the Container-Lab's LAN.
 package mess
 
 import (

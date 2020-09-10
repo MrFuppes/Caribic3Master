@@ -1,7 +1,5 @@
-//
-// experimenting with a type to represent an instrument in the container
-//
-
+// Package inst implements basic types and functionality to describe and handle
+// instruments (payload) of the CARIBIC container.
 package inst
 
 import (
