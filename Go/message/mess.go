@@ -5,6 +5,7 @@ package mess
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
 	"hash/adler32"
 	"net"
 	"time"
@@ -106,4 +107,16 @@ func (msg MessageBytes) CheckForSig(sendAddr net.UDPAddr, recvAddr net.UDPAddr) 
 		return msg, false
 	}
 	return msg[idx:], true
+}
+
+// String a method to print a readable representation of the message struct.
+func (msgStrct *Message) String() string {
+	repr := fmt.Sprintf("From Addr:\t%v\n", msgStrct.SendAddr)
+	repr += fmt.Sprintf("To Addr:\t%v\n", msgStrct.RecvAddr)
+	repr += fmt.Sprintf("Length (bytes):\t%v\n", msgStrct.PackLen)
+	repr += fmt.Sprintf("Timestamp:\t%s\n", msgStrct.Timestamp)
+	repr += fmt.Sprintf("Type:\t\t%v\n", msgStrct.MsgType)
+	repr += fmt.Sprintf("Data (bytes):\t%v\n", msgStrct.Data)
+	repr += fmt.Sprintf("Adler32 CS:\t%v\n", msgStrct.Checksum)
+	return repr
 }
