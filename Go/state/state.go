@@ -62,3 +62,13 @@ func FromName(expr string) (State, error) {
 	errstr := "state: invalid name -> " + expr
 	return 999, errors.New(errstr)
 }
+
+// String converts a numeric state into its abbreviated string repr
+func (s State) String() string {
+	return StateAbbr[s]
+}
+
+// StringLong converts a numeric state into its verbose string repr
+func (s State) StringLong() string {
+	return StateNames[s]
+}
