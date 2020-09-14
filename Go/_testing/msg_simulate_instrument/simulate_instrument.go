@@ -1,7 +1,9 @@
 package main
 
 import (
-	"car3-master/msg_parsing/msgutils"
+	inst "car3-master/Go/instrument"
+	mess "car3-master/Go/message"
+	"car3-master/Go/state"
 	"flag"
 	"fmt"
 	"log"
@@ -10,14 +12,13 @@ import (
 )
 
 func recvMsg(conn *net.UDPConn, ch chan []byte) {
-	fmt.Println("starting listener...")
 	for {
 		buf := make([]byte, 128)
 		_, remoteaddr, err := conn.ReadFromUDP(buf)
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("Read a message from %v\n", remoteaddr)
+		fmt.Println(time.Now().UTC().Format(isoFmtMilli), "- received message from", remoteaddr)
 		ch <- buf
 	}
 }
@@ -27,30 +28,50 @@ func sendMsg(conn *net.UDPConn, addr *net.UDPAddr, msg []byte) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(time.Now().UTC().Format(time.RFC3339), "- sent msg to", addr)
+	fmt.Println(time.Now().UTC().Format(isoFmtMilli), "- sent message to", addr)
 }
 
-var recv = flag.String("listen", "192.168.1.64:16164", "listen-on address")
-var send = flag.String("reply", "192.168.1.1:16101", "reply-to address")
+var recv = flag.String("listen", "192.168.1.64:16064", "listen-on address")
+var send = flag.String("reply", "192.168.1.1:16001", "reply-to address")
+
+const isoFmtMilli = "2006-01-02T15:04:05.000Z"
 
 func main() {
 	flag.Parse()
 
+	ins := inst.NewInstr()
+	ins.Name = "Test-Instrument"
+	ins.Address = *recv
+	ins.ID = 64
+	ins.WUallowed = true
+	ins.State = state.Idle
+	fmt.Printf("I'm an instrument at (IP:Port) %s\n ...and wait for messages from %s\n", *recv, *send)
+	fmt.Printf("my config is\n%v\n", ins)
+
+	// to-do: implement master as an instrument
 	masAddr, err := net.ResolveUDPAddr("udp", *send)
 	if err != nil {
 		log.Fatal(err)
 	}
-	insAddr, err := net.ResolveUDPAddr("udp", *recv)
+
+	insAddr, err := ins.ResolveUDPAddr()
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(masAddr, " ? ->", insAddr)
+
+	reply := mess.Message{}
+	reply.SendAddr = *insAddr
+	if err != nil {
+		log.Fatal(err)
+	}
+	reply.RecvAddr = *masAddr
+	reply.MsgType = uint8(4)
+	// reply.Data = []byte("hello from instrument!")
 
 	// listen on instrument address
 	con, err := net.ListenUDP("udp", insAddr)
 	if err != nil {
 		log.Fatal(err)
-		return
 	}
 	defer con.Close()
 	dataIn := make(chan []byte)
@@ -58,21 +79,17 @@ func main() {
 	// listen for a message from masAddr
 	go recvMsg(con, dataIn)
 
-	reply := msgutils.Message{}
-	reply.SendAddr = *insAddr
-	reply.RecvAddr = *masAddr
-	reply.MsgType = uint8(4)
-	reply.Data = []byte("hello from instrument!")
-
 	for {
 		select {
 		case x := <-dataIn:
 			// data on the channel :)
-			parsed, _ := msgutils.MessageBytes(x).ToMessage()
-			fmt.Println("got data:", string(parsed.Data))
+			parsed, _ := mess.MessageBytes(x).ToMessage()
+			fmt.Printf(">>> got status SET: %s with timestamp %s\n",
+				string(parsed.Data), parsed.Timestamp.Format(isoFmtMilli))
 			// reply from insAddr that the message was received
 			fmt.Println("sending reply...")
 			reply.Timestamp = time.Now().UTC()
+			reply.Data = parsed.Data
 			sendMsg(con, masAddr, reply.ToBytes())
 		case <-time.After(5 * time.Second):
 			fmt.Println("timeout 5s")

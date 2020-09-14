@@ -16,7 +16,7 @@ var payload inst.Payload
 
 func init() {
 	wd, _ := os.Getwd()
-	src := path.Join(wd, "instr_cfg_v20200907.yml")
+	src := path.Join(wd, "instr_cfg_v20200914.yml")
 	payload, _ = inst.PayloadFromYAML(src)
 }
 
@@ -25,7 +25,7 @@ func sendMsg(conn *net.UDPConn, addr *net.UDPAddr, msg []byte) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(time.Now().UTC().Format(time.RFC3339), "- sent msg to", addr)
+	fmt.Println(time.Now().UTC().Format(isoFmtMilli), "- sent msg to", addr)
 }
 
 func recvMsg(conn *net.UDPConn, ch chan []byte) {
@@ -36,17 +36,20 @@ func recvMsg(conn *net.UDPConn, ch chan []byte) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("Read a message from %v \n", remoteaddr)
+		fmt.Println(time.Now().UTC().Format(isoFmtMilli), "- received message from", remoteaddr)
 		ch <- buf
 	}
 }
 
-var send = flag.String("from", "192.168.1.1:16101", "sender address")
-var recv = flag.String("to", "192.168.1.64:16164", "receiver address")
-var msg = flag.String("message", "hello from master :)", "the message to send")
+var send = flag.String("from", "192.168.1.1:16001", "sender address")
+var recv = flag.String("to", "192.168.1.64:16064", "receiver address")
+var msg = flag.String("message", "SB", "the message to send")
+
+const isoFmtMilli = "2006-01-02T15:04:05.000Z"
 
 func main() {
 	flag.Parse()
+	fmt.Printf("I'm the Master (IP:Port) %s\n", *send)
 
 	masAddr, err := net.ResolveUDPAddr("udp", *send)
 	if err != nil {
@@ -56,19 +59,20 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(masAddr, " ! ->", insAddr)
 
-	for k, v := range payload {
-		fmt.Println(k, v)
-	}
+	// for k, v := range payload {
+	// 	fmt.Println(k, v)
+	// }
+
+	fmt.Println(payload[1])
 
 	// construct the message to send
 	message := mess.Message{}
 	message.SendAddr = *masAddr
 	message.RecvAddr = *insAddr
-	message.MsgType = uint8(3)
+	message.MsgType = uint8(0)
 	message.Data = []byte(*msg)
-	fmt.Printf("message strct:\n%v\n\n", message)
+	fmt.Printf("prepared message:\n%s\n\n", message.String())
 
 	con, err := net.ListenUDP("udp", masAddr)
 	if err != nil {
@@ -88,9 +92,9 @@ func main() {
 		case x := <-dataIn:
 			// data on the channel :)
 			parsed, _ := mess.MessageBytes(x).ToMessage()
-			fmt.Println("got data:", string(parsed.Data))
+			fmt.Printf(">>> got status IS: %s with timestamp %s\n",
+				string(parsed.Data), parsed.Timestamp.Format(isoFmtMilli))
 		case <-time.After(5 * time.Second):
-			fmt.Println("sending message...")
 			message.Timestamp = time.Now().UTC()
 			sendMsg(con, insAddr, message.ToBytes())
 		}
