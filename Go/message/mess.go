@@ -21,18 +21,24 @@ type Message struct {
 	Timestamp time.Time // the moment the message was sent
 	MsgType   uint8     // 0 status set, 1 status is, 2 ambient params, 3 measured data
 	Data      []byte
-	Checksum  uint32 // Adler32
+	Checksum  uint32 // Adler32 or CRC32
 }
+
+// a variable to hold the checksum function.
+var csFunc func([]byte) uint32 = adler32.Checksum // crc32.ChecksumIEEE
+
+// a constant holding the base length of a message (without data).
+const msgBaseLen = 27
 
 // ToBytes - method of Message; cast it to a slice of bytes.
 // Numbers in big endian byte order.
 func (msgStrct *Message) ToBytes() MessageBytes {
-	msg := make([]byte, len(msgStrct.Data)+27)
+	msg := make([]byte, len(msgStrct.Data)+msgBaseLen)
 	// sender and receiver addresses:
 	copy(msg[0:6], UDPAddrToBytes(msgStrct.SendAddr))
 	copy(msg[6:12], UDPAddrToBytes(msgStrct.RecvAddr))
 	// length:
-	binary.BigEndian.PutUint16(msg[12:14], uint16(len(msgStrct.Data)+27))
+	binary.BigEndian.PutUint16(msg[12:14], uint16(len(msgStrct.Data)+msgBaseLen))
 	// timestamp:
 	t := typeconv.Float64toBytesBE(typeconv.TimetoPOSIX(msgStrct.Timestamp))
 	copy(msg[14:22], t)
@@ -41,8 +47,8 @@ func (msgStrct *Message) ToBytes() MessageBytes {
 	// data; must be byte slice already
 	copy(msg[23:23+len(msgStrct.Data)], msgStrct.Data)
 	// checksum
-	cs := adler32.Checksum(msg[:len(msg)-4])
-	binary.BigEndian.PutUint32(msg[23+len(msgStrct.Data):27+len(msgStrct.Data)], cs)
+	cs := csFunc(msg[:len(msg)-4])
+	binary.BigEndian.PutUint32(msg[23+len(msgStrct.Data):msgBaseLen+len(msgStrct.Data)], cs)
 	return msg
 }
 
@@ -72,7 +78,7 @@ type MessageBytes []byte
 // ToMessage - parse message bytes to a message struct.
 func (msg MessageBytes) ToMessage() (Message, bool) {
 	var result Message
-	if len(msg) < 22 { // assert sufficient length (22 bytes hard-coded!)
+	if len(msg) < msgBaseLen { // assert sufficient length
 		return result, false
 	}
 	l := binary.BigEndian.Uint16(msg[12:14])
@@ -82,7 +88,7 @@ func (msg MessageBytes) ToMessage() (Message, bool) {
 	if len(msg) > int(l) { // truncate message if too long
 		msg = msg[:int(l)]
 	}
-	cs := adler32.Checksum(msg[:len(msg)-4])
+	cs := csFunc(msg[:len(msg)-4])
 	b := make([]byte, 4)
 	binary.BigEndian.PutUint32(b, cs)
 	if !bytes.HasSuffix(msg, b) { // assert msg has checksum suffix
@@ -117,6 +123,6 @@ func (msgStrct *Message) String() string {
 	repr += fmt.Sprintf("Timestamp:\t%s\n", msgStrct.Timestamp)
 	repr += fmt.Sprintf("Type:\t\t%v\n", msgStrct.MsgType)
 	repr += fmt.Sprintf("Data (bytes):\t%v\n", msgStrct.Data)
-	repr += fmt.Sprintf("Adler32 CS:\t%v\n", msgStrct.Checksum)
+	repr += fmt.Sprintf("Checksum:\t%v\n", msgStrct.Checksum)
 	return repr
 }
