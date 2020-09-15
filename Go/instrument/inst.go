@@ -1,5 +1,6 @@
 // Package inst implements basic types and functionality to describe and handle
 // instruments (payload) of the CARIBIC container.
+// The package uses basic types and functionality from package state.
 package inst
 
 import (

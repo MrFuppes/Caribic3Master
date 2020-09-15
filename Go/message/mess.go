@@ -1,5 +1,6 @@
 // Package mess implements basic types and functionality to handle messages
 // on the Container-Lab's LAN.
+// Basic package except for general utils from package typeconv.
 package mess
 
 import (
