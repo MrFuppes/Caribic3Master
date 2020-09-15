@@ -1,4 +1,5 @@
 // Package state implements state type for Container-Lab and instruments.
+// Basic package, no dependencies (standard lib only).
 package state
 
 import (
