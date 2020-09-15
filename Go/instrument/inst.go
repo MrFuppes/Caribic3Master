@@ -41,7 +41,8 @@ type instruments struct {
 	Instruments []Instrument `json:"Payload" yaml:"Payload"`
 }
 
-// UnmarshallFunc a type to hold the unmarshal function for different config files.
+// UnmarshallFunc - a type to hold the unmarshal function for different config files.
+// e.g. json.Unmarshal or yaml.Unmarshal
 type UnmarshallFunc func([]byte, interface{}) error
 
 // PayloadFromCfg - fill the payload map with instruments from a config file
