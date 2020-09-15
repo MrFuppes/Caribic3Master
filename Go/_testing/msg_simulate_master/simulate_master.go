@@ -10,6 +10,8 @@ import (
 	"os"
 	"path"
 	"time"
+
+	"gopkg.in/yaml.v2"
 )
 
 var payload inst.Payload
@@ -17,7 +19,7 @@ var payload inst.Payload
 func init() {
 	wd, _ := os.Getwd()
 	src := path.Join(wd, "instr_cfg_v20200914.yml")
-	payload, _ = inst.PayloadFromYAML(src)
+	payload, _ = inst.PayloadFromCfg(src, yaml.Unmarshal)
 }
 
 func sendMsg(conn *net.UDPConn, addr *net.UDPAddr, msg []byte) {

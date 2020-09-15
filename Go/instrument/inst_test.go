@@ -3,11 +3,14 @@ package inst_test
 import (
 	. "car3-master/Go/instrument"
 	"car3-master/Go/state"
+	"encoding/json"
 	"fmt"
 	"net"
 	"os"
 	"path"
 	"testing"
+
+	"gopkg.in/yaml.v2"
 )
 
 func TestInst(t *testing.T) {
@@ -24,18 +27,19 @@ func TestInst(t *testing.T) {
 	fmt.Printf("inst64 ip resolved: %T -> %v\n\n", inst64UDPAddr, inst64UDPAddr)
 }
 
-func TestPayloadFromYAML(t *testing.T) {
+func TestPayloadFromCfg(t *testing.T) {
 	wd, _ := os.Getwd()
+	// YAML
 	src := path.Join(wd, "instr_cfg_test.yml")
-	p, _ := PayloadFromYAML(src)
+	fmt.Printf("***\n from YAML:\n***\n")
+	p, _ := PayloadFromCfg(src, yaml.Unmarshal)
 	for k, v := range p {
 		fmt.Printf("@ %v:\n%v\n", k, v)
 	}
-}
-func TestPayloadFromJSON(t *testing.T) {
-	wd, _ := os.Getwd()
-	src := path.Join(wd, "instr_cfg_test.json")
-	p, _ := PayloadFromJSON(src)
+	// JSON
+	src = path.Join(wd, "instr_cfg_test.json")
+	fmt.Printf("***\n from JSON:\n***\n")
+	p, _ = PayloadFromCfg(src, json.Unmarshal)
 	for k, v := range p {
 		fmt.Printf("@ %v:\n%v\n", k, v)
 	}

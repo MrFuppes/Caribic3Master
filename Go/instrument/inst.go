@@ -5,7 +5,6 @@ package inst
 import (
 	"car3-master/Go/state"
 	"encoding/binary"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -13,8 +12,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-
-	"gopkg.in/yaml.v2"
 )
 
 // Instrument - a struct to characterize an instrument in the Conatiner-Lab.
@@ -44,47 +41,25 @@ type instruments struct {
 	Instruments []Instrument `json:"Payload" yaml:"Payload"`
 }
 
-// PayloadFromJSON - fill the payload map with instruments from a config file in json format.
-func PayloadFromJSON(src string) (Payload, error) {
+// UnmarshallFunc a type to hold the unmarshal function for different config files.
+type UnmarshallFunc func([]byte, interface{}) error
+
+// PayloadFromCfg - fill the payload map with instruments from a config file
+func PayloadFromCfg(src string, unmarshaller UnmarshallFunc) (Payload, error) {
 	var p = Payload{}
-	var inst instruments
+	var inst instruments // a struct to hold json or yaml data
 
-	jsonFile, err := os.Open(src)
+	f, err := os.Open(src)
 	if err != nil {
 		return p, err
 	}
-	defer jsonFile.Close()
-	jsonData, err := ioutil.ReadAll(jsonFile)
+	defer f.Close()
+	data, err := ioutil.ReadAll(f)
 	if err != nil {
 		return p, err
 	}
-
-	json.Unmarshal(jsonData, &inst)
-
-	return unmarshalledToPayload(&inst, p) // p, nil
-}
-
-// PayloadFromYAML - fill the payload map with instruments from a config file in yaml format.
-func PayloadFromYAML(src string) (Payload, error) {
-	var p = Payload{}
-	var inst instruments
-
-	yamlFile, err := os.Open(src)
-	if err != nil {
-		return p, err
-	}
-	defer yamlFile.Close()
-	yamlData, err := ioutil.ReadAll(yamlFile)
-	if err != nil {
-		return p, err
-	}
-	yaml.Unmarshal(yamlData, &inst)
-
-	return unmarshalledToPayload(&inst, p) // p, nil
-}
-
-// unmarshalledToPayload a helper function to transfer instrument type to payload map
-func unmarshalledToPayload(inst *instruments, p Payload) (Payload, error) {
+	unmarshaller(data, &inst) // fill the struct according to source file
+	// now transfer the struct's content to the map:
 	for i := 0; i < len(inst.Instruments); i++ {
 		// check if key was already set
 		if _, seen := p[inst.Instruments[i].ID]; seen {
