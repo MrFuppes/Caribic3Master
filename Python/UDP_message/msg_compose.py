@@ -57,7 +57,8 @@ if __name__ == '__main__':
     # define message content
     addr_from = ('192.168.1.1', 16101)
     addr_to = ('192.168.1.64', 16164)
-    msg_type, data = 0, 'SB'.encode('ASCII')
+    msg_type = 0
+    data = 'SB'.encode('ASCII')
     # ...and create a message packet:
     packet = composeMsg(addr_from, addr_to, msg_type, data, fmap)
     print('bytes in packet ->\n', list(map(hex, packet)))
