@@ -117,13 +117,12 @@ if __name__ == '__main__':
               'data': slice(23, -4),
               'cs': slice(-4, None)}
 
-
     # define message content
     FROM = ('192.168.1.1', 16101)
     TO = ('192.168.1.64', 16164)
     msg_type = 0
     data = 'SB'.encode('ASCII')
-
+    # ...and create a message packet:
     packet = composeMsg(FROM, TO, msg_type, data, fmap)
     print('bytes in packet ->\n', list(map(hex, packet)))
 
