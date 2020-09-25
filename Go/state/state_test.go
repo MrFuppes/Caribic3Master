@@ -1,7 +1,7 @@
 package state_test
 
 import (
-	. "car3-master/Go/state"
+	. "car3-master/state"
 	"fmt"
 	"testing"
 )

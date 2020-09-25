@@ -4,7 +4,7 @@
 package inst
 
 import (
-	"car3-master/Go/state"
+	"car3-master/state"
 	"encoding/binary"
 	"errors"
 	"fmt"

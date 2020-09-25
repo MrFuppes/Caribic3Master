@@ -1,7 +1,7 @@
 package main
 
 import (
-	mess "car3-master/Go/message"
+	mess "car3-master/message"
 	"fmt"
 	"log"
 	"net"

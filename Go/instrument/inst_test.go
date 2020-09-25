@@ -1,8 +1,8 @@
 package inst_test
 
 import (
-	. "car3-master/Go/instrument"
-	"car3-master/Go/state"
+	. "car3-master/instrument"
+	"car3-master/state"
 	"encoding/json"
 	"fmt"
 	"net"

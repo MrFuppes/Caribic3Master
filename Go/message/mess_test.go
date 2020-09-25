@@ -1,7 +1,7 @@
 package mess_test
 
 import (
-	. "car3-master/Go/message"
+	. "car3-master/message"
 	"fmt"
 	"net"
 	"testing"

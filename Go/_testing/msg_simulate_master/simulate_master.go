@@ -1,8 +1,8 @@
 package main
 
 import (
-	inst "car3-master/Go/instrument"
-	mess "car3-master/Go/message"
+	inst "car3-master/instrument"
+	mess "car3-master/message"
 	"flag"
 	"fmt"
 	"log"
