@@ -24,14 +24,14 @@ func TestState(t *testing.T) {
 		fmt.Println("state order correct?", assertTrue)
 	}
 
-	assertTrue = StateNames[s3>>1] == "WarmUp"
-	fmt.Println(StateNames[s3>>1], assertTrue)
+	assertTrue = StateNames[s3-1] == "WarmUp"
+	fmt.Println(StateNames[s3-1], assertTrue)
 	if !assertTrue {
 		t.Error("incorrect attribution of state name")
 	}
 
-	assertTrue = StateAbbr[s4>>3] == "IN"
-	fmt.Println(StateAbbr[s4>>3], assertTrue)
+	assertTrue = StateAbbr[s4-3] == "IN"
+	fmt.Println(StateAbbr[s4-3], assertTrue)
 	if !assertTrue {
 		t.Error("incorrect attribution of state name abbreviation")
 	}
@@ -40,7 +40,7 @@ func TestState(t *testing.T) {
 
 func TestFromAbbr(t *testing.T) {
 	s, e := FromAbbr("SB")
-	if (s != 4) || (e != nil) {
+	if (s != 3) || (e != nil) {
 		t.Error("abbreviation to state nbr invalid")
 	}
 

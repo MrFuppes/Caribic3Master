@@ -44,7 +44,7 @@ func recvMsg(conn *net.UDPConn, ch chan []byte) {
 }
 
 var send = flag.String("from", "192.168.1.1:16001", "sender address")
-var recv = flag.String("to", "192.168.1.64:16064", "receiver address")
+var recv = flag.String("to", "192.168.1.2:16002", "receiver address")
 var msg = flag.String("message", "SB", "the message to send")
 
 const isoFmtMilli = "2006-01-02T15:04:05.000Z"
