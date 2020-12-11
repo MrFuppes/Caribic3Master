@@ -2,14 +2,14 @@
 """
 Created on Wed Jul 22 11:41:44 2020
 
-@author: va6504
+@author: f.obersteiner
 """
 
 # https://de.wikipedia.org/wiki/Liste_der_standardisierten_Ports#Registrierte_Ports:_1024%E2%80%9349151
 
 # Instrument #64, receives message
-#   on 192.168.1.64:16164
-#   replies to 192.168.1.1:16101
+#           on 192.168.232.64:16064
+#   replies to 192.168.232.1:16064
 
 from datetime import datetime, timezone
 import socket
@@ -17,8 +17,8 @@ import struct
 import time
 
 TIMEOUT = 5
-recv_on = ('192.168.1.64', 16164)
-repl_on = ('192.168.1.1', 16101)
+recv_on = ('192.168.232.64', 16064)
+repl_on = ('192.168.232.1', 16064)
 reply = "message received.".encode('utf-8')
 
 
@@ -35,5 +35,3 @@ with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
     sent = sock.sendto(reply, repl_on)
 
 print("done.")
-
-

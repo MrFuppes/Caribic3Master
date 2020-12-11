@@ -2,13 +2,23 @@
 """
 Created on Mon Jul 27 17:38:58 2020
 
-@author: va6504
+@author: f.obersteiner
 """
 import socket
 import struct
 import time
 import zlib
 
+# format codes for struct, for each meassage part
+# could be loaded from config file
+fmap = {'addr_from_ip': '!BBBB',
+        'addr_from_port': '!H',
+        'addr_to_ip': '!BBBB',
+        'addr_to_port': '!H',
+        'len': '!H',
+        'ts': '!d',
+        'type': '!B',
+        'cs': '!I'}
 
 
 def composeMsg(addr_from: tuple, addr_to: tuple,
@@ -42,21 +52,9 @@ def composeMsg(addr_from: tuple, addr_to: tuple,
 
 #------------------------------------------------------------------------------
 if __name__ == '__main__':
-
-    # format codes for struct, for each meassage part
-    # could be loaded from config file
-    fmap = {'addr_from_ip': '!BBBB',
-            'addr_from_port': '!H',
-            'addr_to_ip': '!BBBB',
-            'addr_to_port': '!H',
-            'len': '!H',
-            'ts': '!d',
-            'type': '!B',
-            'cs': '!I'}
-
     # define message content
-    addr_from = ('192.168.1.1', 16101)
-    addr_to = ('192.168.1.64', 16164)
+    addr_from = ('192.168.232.1', 16001)
+    addr_to = ('192.168.232.64', 16064)
     msg_type = 0
     data = 'SB'.encode('ASCII')
     # ...and create a message packet:

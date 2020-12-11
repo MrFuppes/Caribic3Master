@@ -2,7 +2,7 @@
 """
 Created on Fri Sep 25 09:50:54 2020
 
-@author: va6504
+@author: f.obersteiner
 """
 from datetime import datetime, timezone
 import socket
@@ -11,6 +11,28 @@ import zlib
 
 from msg_compose import composeMsg
 
+# format codes for struct, for each meassage part
+# could be loaded from config file
+fmap = {'addr_from_ip': '!BBBB',
+        'addr_from_port': '!H',
+        'addr_to_ip': '!BBBB',
+        'addr_to_port': '!H',
+        'len': '!H',
+        'ts': '!d',
+        'type': '!B',
+        'cs': '!I'}
+
+# index positions for message parts
+# could be loaded from config file
+idxmap = {'addr_from_ip': slice(0, 4),
+          'addr_from_port': slice(4, 6),
+          'addr_to_ip': slice(6, 10),
+          'addr_to_port': slice(10, 12),
+          'len': slice(12, 14),
+          'ts': slice(14, 22),
+          'type': slice(22, 23),
+          'data': slice(23, -4),
+          'cs': slice(-4, None)}
 
 #------------------------------------------------------------------------------
 def checkMsg(packet: bytes,
@@ -93,33 +115,9 @@ def parseMsg(packet: bytes,
 
 #------------------------------------------------------------------------------
 if __name__ == '__main__':
-
-    # format codes for struct, for each meassage part
-    # could be loaded from config file
-    fmap = {'addr_from_ip': '!BBBB',
-            'addr_from_port': '!H',
-            'addr_to_ip': '!BBBB',
-            'addr_to_port': '!H',
-            'len': '!H',
-            'ts': '!d',
-            'type': '!B',
-            'cs': '!I'}
-
-    # index positions for message parts
-    # could be loaded from config file
-    idxmap = {'addr_from_ip': slice(0, 4),
-              'addr_from_port': slice(4, 6),
-              'addr_to_ip': slice(6, 10),
-              'addr_to_port': slice(10, 12),
-              'len': slice(12, 14),
-              'ts': slice(14, 22),
-              'type': slice(22, 23),
-              'data': slice(23, -4),
-              'cs': slice(-4, None)}
-
     # define message content
-    FROM = ('192.168.1.1', 16101)
-    TO = ('192.168.1.64', 16164)
+    FROM = ('192.168.232.1', 16001)
+    TO = ('192.168.232.64', 16064)
     msg_type = 0
     data = 'SB'.encode('ASCII')
     # ...and create a message packet:

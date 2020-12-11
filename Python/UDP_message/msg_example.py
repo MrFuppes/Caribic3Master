@@ -2,7 +2,7 @@
 """
 Created on Tue Jul 21 14:03:15 2020
 
-@author: va6504
+@author: f.obersteiner
 """
 import random
 import socket
@@ -11,8 +11,8 @@ import time
 import zlib
 
 # define message content
-addr_from = ('192.168.1.1', 16101)
-addr_to = ('192.168.1.64', 16164)
+addr_from = ('192.168.232.1', 16001)
+addr_to = ('192.168.232.64', 16064)
 msg_type, status_str = 0, 'SB'
 
 # format codes for struct, for each meassage part
