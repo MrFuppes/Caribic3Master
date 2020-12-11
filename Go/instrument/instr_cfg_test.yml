@@ -8,26 +8,24 @@
 #   Address (string)
 #   Warm-Up state allowed (boolean)
 #
-#   implicit: initial state is IN
-#
 Payload:
 -
     ID: 1
     Name: "Master"
-    Address: "192.168.1.64:16001"
+    Address: "192.168.232.1"
     WU_allowed: true
 -
     ID: 2
     Name: "cRIO"
-    Address: "192.168.1.64:16002"
+    Address: "192.168.232.2"
     WU_allowed: true
 -
     ID: 64
     Name: "Test_Instr_at_64"
-    Address: "192.168.1.64:16064"
+    Address: "192.168.232.64"
     WU_allowed: false
 -
     ID: 112
     Name: "Test_Instr_at_112"
-    IP_Address: "192.168.1.112:16112"
+    IP_Address: "192.168.232.112"
     WU_allowed: true

@@ -61,3 +61,26 @@ func TestFromName(t *testing.T) {
 		t.Error("name to state nbr invalid")
 	}
 }
+
+func TestStateString(t *testing.T) {
+	msg := "invalid conversion from state number to string"
+	s := State(4).String()
+	if s != "MS" {
+		t.Error(msg)
+	}
+
+	s = State(5).String()
+	if s != "invalid state nbr" {
+		t.Error(msg)
+	}
+
+	s = State(3).StringLong()
+	if s != "Standby" {
+		t.Error(msg)
+	}
+
+	s = State(9).StringLong()
+	if s != "invalid state nbr" {
+		t.Error(msg)
+	}
+}

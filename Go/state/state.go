@@ -11,30 +11,37 @@ import (
 type State uint
 
 const (
+	// Undefined state represented by uint 0
 	Undefined State = iota
+	// Idle state represented by uint 1
 	Idle
+	// WarmUp state represented by uint 2
 	WarmUp
+	// Standby state represented by uint 3
 	Standby
+	// Measure state represented by uint 4
 	Measure
 )
 
-// StateNames - a mapping of State -> Name
-var StateNames = map[State]string{
-	0: "Undefined",
-	1: "Idle",
-	2: "WarmUp",
-	3: "Standby",
-	4: "Measure",
-}
+var (
+	// StateNames - a mapping of State -> Name
+	StateNames = map[State]string{
+		0: "Undefined",
+		1: "Idle",
+		2: "WarmUp",
+		3: "Standby",
+		4: "Measure",
+	}
 
-// StateAbbr - a mapping of State -> Abbreviation
-var StateAbbr = map[State]string{
-	0: "NA",
-	1: "IN",
-	2: "WU",
-	3: "SB",
-	4: "MS",
-}
+	// StateAbbr - a mapping of State -> Abbreviation
+	StateAbbr = map[State]string{
+		0: "NA",
+		1: "IN",
+		2: "WU",
+		3: "SB",
+		4: "MS",
+	}
+)
 
 // FromAbbr - get state number from abbreviation
 func FromAbbr(expr string) (State, error) {
@@ -62,10 +69,16 @@ func FromName(expr string) (State, error) {
 
 // String converts a numeric state into its abbreviated string repr
 func (s State) String() string {
-	return StateAbbr[s]
+	if v, ok := StateAbbr[s]; ok {
+		return v
+	}
+	return "invalid state nbr"
 }
 
 // StringLong converts a numeric state into its verbose string repr
 func (s State) StringLong() string {
-	return StateNames[s]
+	if v, ok := StateNames[s]; ok {
+		return v
+	}
+	return "invalid state nbr"
 }

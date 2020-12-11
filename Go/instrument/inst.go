@@ -17,17 +17,17 @@ import (
 
 // Instrument - a struct to characterize an instrument in the Conatiner-Lab.
 type Instrument struct {
-	ID        int         `json:"ID" yaml:"ID"`
-	Name      string      `json:"Name" yaml:"Name"`
-	Address   string      `json:"Address" yaml:"Address"`
-	WUallowed bool        `json:"WU_allowed" yaml:"WU_allowed"`
-	State     state.State //string
+	ID        uint   `json:"ID" yaml:"ID"`
+	Name      string `json:"Name" yaml:"Name"`
+	Address   string `json:"Address" yaml:"Address"`
+	WUallowed bool   `json:"WU_allowed" yaml:"WU_allowed"`
+	State     state.State
 }
 
 // NewInstr - instantiate a new instrument
 func NewInstr() Instrument {
 	i := Instrument{}
-	i.ID = -1
+	i.ID = 0
 	i.Name = "unknown"
 	i.Address = "unknown"
 	i.WUallowed = false
@@ -36,7 +36,7 @@ func NewInstr() Instrument {
 }
 
 // Payload - a mapping of instrument-ID (int) -> instrument type (struct).
-type Payload map[int]Instrument
+type Payload map[uint]Instrument
 
 type instruments struct {
 	Instruments []Instrument `json:"Payload" yaml:"Payload"`

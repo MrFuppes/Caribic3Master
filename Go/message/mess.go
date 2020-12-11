@@ -14,6 +14,9 @@ import (
 	"github.com/MrFuppes/Go_General_Use/typeconv"
 )
 
+// a constant holding the base length of a message (without data).
+const msgBaseLen = 27
+
 // Message - a struct to hold all the information of a UDP message.
 type Message struct {
 	SendAddr  net.UDPAddr // who sent
@@ -25,11 +28,8 @@ type Message struct {
 	Checksum  uint32 // Adler32 or CRC32
 }
 
-// a variable to hold the checksum function.
+// a variable to hold the checksum/crc function.
 var csFunc func([]byte) uint32 = adler32.Checksum // crc32.ChecksumIEEE
-
-// a constant holding the base length of a message (without data).
-const msgBaseLen = 27
 
 // ToBytes - method of Message; cast it to a slice of bytes.
 // Numbers in big endian byte order.

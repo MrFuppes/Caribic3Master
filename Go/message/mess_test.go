@@ -9,8 +9,8 @@ import (
 )
 
 func BenchmarkCheckForSig(b *testing.B) {
-	masAddr, _ := net.ResolveUDPAddr("udp", "192.168.1.1:16101")
-	insAddr, _ := net.ResolveUDPAddr("udp", "192.168.1.64:16164")
+	masAddr, _ := net.ResolveUDPAddr("udp", "192.168.232.1:16101")
+	insAddr, _ := net.ResolveUDPAddr("udp", "192.168.232.64:16164")
 	msgb := MessageBytes{0xff, 0xC0, 0xA8, 0x01, 0x01, 0x3E, 0xE5, 0xC0, 0xA8, 0x01,
 		0x40, 0x3F, 0x24, 0x00, 0x1D, 0x41, 0xD7, 0xC6, 0xBB, 0xB3, 0xA4, 0xD7,
 		0xA5, 0x00, 0x53, 0x42, 0x87, 0x51, 0x0A, 0xB8, 0xff}
@@ -25,12 +25,12 @@ func TestMess(t *testing.T) {
 	var msgStrct Message
 
 	// example
-	// Send status SB from 192.168.1.1 (Master Computer) to instrument at 192.168.1.64
+	// Send status SB from 192.168.232.1 (Master Computer) to instrument at 192.168.232.64
 	// must be known: master and instrument address
-	masAddr, err := net.ResolveUDPAddr("udp", "192.168.1.1:16101") // {IPAddress: net.ParseIP("192.168.1.1"), UDPPort: 16101}
+	masAddr, err := net.ResolveUDPAddr("udp", "192.168.232.1:16101")
 	fmt.Printf("%v, %T (err: %v)\n", masAddr, masAddr, err)
 
-	insAddr, err := net.ResolveUDPAddr("udp", "192.168.1.64:16164") //Address{IPAddress: net.ParseIP("192.168.1.64"), UDPPort: 16164}
+	insAddr, err := net.ResolveUDPAddr("udp", "192.168.232.64:16164")
 	fmt.Printf("%v, %T (err: %v)\n\n", insAddr, insAddr, err)
 
 	// a sample message of bytes with random byte at beginning and end
