@@ -10,8 +10,9 @@
  - config files etc., e.g. IP range and specific instrument IPs
 
 ### *./Go*
- - central master computer software
- - includes utils to handle CARIBIC-3 communication in Go
+ - source code can be found in a separate repo [here](https://git.scc.kit.edu/FObersteiner/gocaribicmaster)
+   - master computer main software
+   - includes e.g. utils to handle CARIBIC-3 communication in Go
  
 ### *./LabVIEW*
  - utils to handle CARIBIC-3 communication in LabVIEW
